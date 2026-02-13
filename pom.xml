@@ -35,7 +35,8 @@
     <mapstruct.version>1.6.3</mapstruct.version>
     <record.builder.version>48</record.builder.version>
     <openapi-generator-version>7.17.0</openapi-generator-version>
-    <medicines-api-url>${env.MEDICINES_API_URL}</medicines-api-url>
+    <medicines-api-url
+    >https://medicines-api-production.up.railway.app/api-docs/json</medicines-api-url>
   </properties>
   <dependencies>
     <dependency>
