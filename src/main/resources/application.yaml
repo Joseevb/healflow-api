@@ -57,7 +57,7 @@ api:
   key-header: X-API-KEY
   key-path: /user-provisions/**,/specialists/**
 
-medicines-api-url: ${https://medicines-api-production.up.railway.app/api-docs/json}
+medicines-api-url: https://medicines-api-production.up.railway.app/api-docs/json
 
 logging:
   level:
