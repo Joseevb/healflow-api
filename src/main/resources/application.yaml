@@ -7,7 +7,7 @@ spring:
       enabled: true
 
   datasource:
-    url: jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:hospital_db}
+    url: ${DATABASE_DATASOURCE}
     username: ${DATABASE_USERNAME:admin}
     password: ${DATABASE_PASSWORD:admin}
     driver-class-name: org.postgresql.Driver
@@ -17,7 +17,15 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
+
+    jakarta:
+      persistence:
+        schema-generation:
+          scripts:
+            action: create
+            create-target: create.sql
+            create-source: metadata
 
   security:
     oauth2:
