@@ -35,7 +35,7 @@
     <mapstruct.version>1.6.3</mapstruct.version>
     <record.builder.version>48</record.builder.version>
     <openapi-generator-version>7.17.0</openapi-generator-version>
-    <medicines-api-url>http://localhost:4000/api-docs/json</medicines-api-url>
+    <medicines-api-url>${env.MEDICINES_API_URL}</medicines-api-url>
   </properties>
   <dependencies>
     <dependency>
