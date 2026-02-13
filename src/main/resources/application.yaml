@@ -52,12 +52,12 @@ scalar:
 api:
   prefix: /api
   version: v1
-  allowedOrigins: ${FRONTEND_URL:http://localhost:3000}
+  allowedOrigins: ${FRONTEND_URL}
   key: ${API_SERVICE_KEY}
   key-header: X-API-KEY
   key-path: /user-provisions/**,/specialists/**
 
-medicines-api-url: ${MEDICINES_API_URL:http://localhost:4000}
+medicines-api-url: ${MEDICINES_API_URL}
 
 logging:
   level:
