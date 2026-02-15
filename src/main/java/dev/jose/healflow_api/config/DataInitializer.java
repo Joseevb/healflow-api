@@ -186,6 +186,79 @@ public class DataInitializer {
             });
   }
 
+  @Bean
+  @Profile("!dev")
+  CommandLineRunner prodDataInitializer(
+      SpecialistRepository specialistRepository,
+      SpecialistAvailabilityRepository availabilityRepository) {
+    return _ -> {
+      transactionTemplate.executeWithoutResult(
+          status -> {
+            // --- Create Specialists ---
+            SpecialistEntity drJohnson =
+                createOrFetchSpecialist(
+                    specialistRepository,
+                    "sarah.johnson@hospital.com",
+                    "Sarah",
+                    "Johnson",
+                    SpecialistTypeEnum.CARDIOLOGY,
+                    "johnson.jpeg");
+
+            SpecialistEntity drChen =
+                createOrFetchSpecialist(
+                    specialistRepository,
+                    "michael.chen@dental.com",
+                    "Michael",
+                    "Chen",
+                    SpecialistTypeEnum.DENTISTRY,
+                    "michael_chen.jpeg");
+
+            SpecialistEntity drBrown =
+                createOrFetchSpecialist(
+                    specialistRepository,
+                    "emily.brown@clinic.com",
+                    "Emily",
+                    "Brown",
+                    SpecialistTypeEnum.GENERAL_PRACTICE,
+                    "emily_brown.jpeg");
+
+            SpecialistEntity drPerez =
+                createOrFetchSpecialist(
+                    specialistRepository,
+                    "emily.perez@clinic.com",
+                    "Emily",
+                    "Perez",
+                    SpecialistTypeEnum.DERMATOLOGY,
+                    "emily_perez.jpeg");
+
+            log.info("Specialists checked/created");
+
+            // --- Create Availabilities ---
+            if (availabilityRepository.count() == 0) {
+              List<SpecialistAvailabilityEntity> availabilities = new ArrayList<>();
+              for (DayOfWeek day : DayOfWeek.values()) {
+                if (day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY) continue;
+
+                // Dr. Johnson
+                availabilities.add(buildAvailability(drJohnson, day, 9, 12));
+                availabilities.add(buildAvailability(drJohnson, day, 13, 17));
+
+                // Dr. Chen
+                availabilities.add(buildAvailability(drChen, day, 9, 17));
+
+                // Dr. Brown
+                availabilities.add(buildAvailability(drBrown, day, 9, 17));
+
+                // Dr. Perez
+                availabilities.add(buildAvailability(drPerez, day, 9, 14));
+              }
+              availabilityRepository.saveAll(availabilities);
+              log.info("Created {} availability slots", availabilities.size());
+            }
+          });
+    };
+  }
+
   // --- Helper Methods to ensure we always have a Managed Entity ---
 
   private UserEntity createOrFetchUser(
