@@ -25,3 +25,6 @@ spring:
 
 api:
   key: C+QN7dUftY30Oh8SYXvmCiRvO/I+DwwTQUh22/A9QqE=
+  allowedOrigins: http://localhost:3000
+
+medicines-api-url: http://localhost:4000/api-docs/json

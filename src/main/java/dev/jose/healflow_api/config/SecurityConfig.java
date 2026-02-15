@@ -26,8 +26,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-  private static final String allowedOrigins = "localhost:3000";
-
   private static final String[] PUBLIC_RESOURCES = {
     "/v3/api-docs/**", "/actuator/**", "/docs/**", "/h2-console"
   };
@@ -39,10 +37,10 @@ public class SecurityConfig {
   @Bean
   SecurityFilterChain filterChain(
       HttpSecurity http,
-      @Value("${api.allowedOrigins}") String allowedOrigins,
+      @Value("${api.allowedOrigins}") String[] allowedOrigins,
       ApiKeyAuthenticationFilter apiKeyFilter)
       throws Exception {
-    return http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+    return http.cors(cors -> cors.configurationSource(corsConfigurationSource(allowedOrigins)))
         .csrf(AbstractHttpConfigurer::disable)
         .headers(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
@@ -65,9 +63,9 @@ public class SecurityConfig {
   }
 
   @Bean
-  CorsConfigurationSource corsConfigurationSource() {
+  CorsConfigurationSource corsConfigurationSource(String[] allowedOrigins) {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.addAllowedOrigin(allowedOrigins);
+    Arrays.stream(allowedOrigins).forEach(configuration::addAllowedOrigin);
     configuration.addAllowedMethod(HttpMethod.GET);
     configuration.addAllowedMethod(HttpMethod.POST);
     configuration.addAllowedMethod(HttpMethod.PUT);
