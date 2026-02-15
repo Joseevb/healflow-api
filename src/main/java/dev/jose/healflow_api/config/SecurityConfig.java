@@ -27,12 +27,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
   private static final String[] PUBLIC_RESOURCES = {
-    "/v3/api-docs/**", "/actuator/**", "/docs/**", "/h2-console"
+    "/v3/api-docs/**", "/actuator/**", "/docs/**", "/h2-console",
   };
 
-  private static final String[] GET_ALLOWED_RESOURCES = {
-    "/specialists/types",
-  };
+  private static final String[] GET_ALLOWED_RESOURCES = {"/specialists/types", "/specialists"};
 
   @Bean
   SecurityFilterChain filterChain(
