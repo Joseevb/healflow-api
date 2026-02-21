@@ -35,8 +35,8 @@
     <mapstruct.version>1.6.3</mapstruct.version>
     <record.builder.version>48</record.builder.version>
     <openapi-generator-version>7.17.0</openapi-generator-version>
-    <medicines-api-url
-    >https://medicines-api-production.up.railway.app/api-docs/json</medicines-api-url>
+    <medicines-api-docs
+    >https://medicines-api-production.up.railway.app/api-docs/json</medicines-api-docs>
   </properties>
   <dependencies>
     <dependency>
@@ -185,7 +185,7 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <inputSpec>${medicines-api-url}</inputSpec>
+              <inputSpec>${medicines-api-docs}</inputSpec>
               <generatorName>java</generatorName>
               <library>restclient</library>
               <modelNameSuffix>DTO</modelNameSuffix>

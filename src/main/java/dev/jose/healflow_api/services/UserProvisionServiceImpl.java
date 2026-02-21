@@ -44,11 +44,14 @@ public class UserProvisionServiceImpl implements UserProvisionService {
   @Override
   @Transactional
   public String provisionUser(ProvisionUserRequestDTO request) {
-    if (userRepository.existsByEmail(request.email())
-        || userRepository.existsByAuthId(request.userId())) {
-      throw new IllegalArgumentException("User already exists");
-    }
+    return userRepository
+        .findByAuthId(request.userId())
+        .or(() -> userRepository.findByEmail(request.email()))
+        .map(user -> user.getId().toString())
+        .orElseGet(() -> createNewUser(request));
+  }
 
+  private String createNewUser(ProvisionUserRequestDTO request) {
     // Determine primary specialist
     SpecialistEntity primarySpecialist;
     if (request.specialistId() != null) {
