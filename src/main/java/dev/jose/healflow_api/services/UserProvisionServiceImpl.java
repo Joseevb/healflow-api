@@ -25,16 +25,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class UserProvisionServiceImpl implements UserProvisionService {
 
   private final UserRepository userRepository;
+  private final TransactionTemplate transactionTemplate;
   private final SpecialistRepository specialistRepository;
-  private final SpecialistAvailabilityRepository availabilityRepository;
   private final HealthMetricRepository healthMetricRepository;
+  private final SpecialistAvailabilityRepository availabilityRepository;
 
   // TODO: Remove
   private final MedicineService medicineService;
@@ -85,7 +87,7 @@ public class UserProvisionServiceImpl implements UserProvisionService {
     UserEntity saved;
 
     try {
-      saved = userRepository.save(entity);
+      saved = transactionTemplate.execute(_ -> userRepository.saveAndFlush(entity));
     } catch (DataIntegrityViolationException e) {
       return userRepository
           .findByAuthId(request.userId())
