@@ -23,9 +23,10 @@ import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 @Slf4j
 @Service
@@ -33,7 +34,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 public class UserProvisionServiceImpl implements UserProvisionService {
 
   private final UserRepository userRepository;
-  private final TransactionTemplate transactionTemplate;
   private final SpecialistRepository specialistRepository;
   private final HealthMetricRepository healthMetricRepository;
   private final SpecialistAvailabilityRepository availabilityRepository;
@@ -45,29 +45,30 @@ public class UserProvisionServiceImpl implements UserProvisionService {
   private final Random random = new Random();
 
   @Override
+  @Retryable(
+      retryFor = {DataIntegrityViolationException.class},
+      maxAttempts = 2,
+      backoff = @Backoff(delay = 100))
   @Transactional
   public String provisionUser(ProvisionUserRequestDTO request) {
     return userRepository
         .findByAuthId(request.userId())
         .or(() -> userRepository.findByEmail(request.email()))
-        .map(user -> user.getId().toString())
+        .map(
+            user -> {
+              log.info("User {} already exists, skipping creation.", request.email());
+              return user.getId().toString();
+            })
         .orElseGet(() -> createNewUser(request));
   }
 
+  // Look how clean this is! Just business logic.
   private String createNewUser(ProvisionUserRequestDTO request) {
-    // Determine primary specialist
-    SpecialistEntity primarySpecialist;
-    if (request.specialistId() != null) {
-      primarySpecialist =
-          specialistRepository
-              .findById(request.specialistId())
-              .orElseThrow(() -> new IllegalArgumentException("Specialist not found"));
-    } else {
-      // Find default specialist (General Practice with most availability)
-      primarySpecialist = findDefaultSpecialist();
-    }
+    SpecialistEntity primarySpecialist =
+        request.specialistId() != null
+            ? specialistRepository.findById(request.specialistId()).orElseThrow()
+            : findDefaultSpecialist();
 
-    // Parse names with defaults
     String firstName = request.firstName() != null ? request.firstName() : "User";
     String lastName = request.lastName() != null ? request.lastName() : "";
     String phone = request.phone() != null ? request.phone() : "";
@@ -83,31 +84,13 @@ public class UserProvisionServiceImpl implements UserProvisionService {
             .isSubscribed(Boolean.TRUE.equals(request.isSubscribed()))
             .build();
 
-    // Persist first to obtain generated id
-    UserEntity saved;
+    // If a race condition happens here, Spring throws DataIntegrityViolationException,
+    // immediately rolls back this failed transaction, and triggers the @Retryable wrapper.
+    var saved = userRepository.save(entity);
 
-    try {
-      saved = transactionTemplate.execute(_ -> userRepository.saveAndFlush(entity));
-    } catch (DataIntegrityViolationException e) {
-      return userRepository
-          .findByAuthId(request.userId())
-          .orElseThrow(() -> new IllegalStateException("User should exist but wasn't found"))
-          .getId()
-          .toString();
-    }
+    log.info("Provisioned user: {} ({})", firstName, request.email());
 
-    log.info(
-        "Provisioned user: {} {} ({}), assigned to specialist: {} {}",
-        firstName,
-        lastName,
-        request.email(),
-        primarySpecialist.getFirstName(),
-        primarySpecialist.getLastName());
-
-    // Now attach medicines to the persisted user
     addMedicineToUser(saved);
-
-    // Generate test health metrics for the user
     generateTestHealthMetrics(saved);
 
     return saved.getId().toString();
