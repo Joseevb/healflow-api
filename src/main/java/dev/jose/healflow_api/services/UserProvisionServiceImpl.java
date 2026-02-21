@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,7 +82,17 @@ public class UserProvisionServiceImpl implements UserProvisionService {
             .build();
 
     // Persist first to obtain generated id
-    var saved = userRepository.save(entity);
+    UserEntity saved;
+
+    try {
+      saved = userRepository.save(entity);
+    } catch (DataIntegrityViolationException e) {
+      return userRepository
+          .findByAuthId(request.userId())
+          .orElseThrow(() -> new IllegalStateException("User should exist but wasn't found"))
+          .getId()
+          .toString();
+    }
 
     log.info(
         "Provisioned user: {} {} ({}), assigned to specialist: {} {}",
