@@ -38,7 +38,6 @@ public class UserProvisionServiceImpl implements UserProvisionService {
   private final HealthMetricRepository healthMetricRepository;
   private final SpecialistAvailabilityRepository availabilityRepository;
 
-  // TODO: Remove
   private final MedicineService medicineService;
   private final UserMedicineService userMedicineService;
 
@@ -62,8 +61,8 @@ public class UserProvisionServiceImpl implements UserProvisionService {
         .orElseGet(() -> createNewUser(request));
   }
 
-  // Look how clean this is! Just business logic.
   private String createNewUser(ProvisionUserRequestDTO request) {
+    log.info("PROVISIONING USER: {}", request);
     SpecialistEntity primarySpecialist =
         request.specialistId() != null
             ? specialistRepository.findById(request.specialistId()).orElseThrow()
@@ -84,14 +83,9 @@ public class UserProvisionServiceImpl implements UserProvisionService {
             .isSubscribed(Boolean.TRUE.equals(request.isSubscribed()))
             .build();
 
-    // If a race condition happens here, Spring throws DataIntegrityViolationException,
-    // immediately rolls back this failed transaction, and triggers the @Retryable wrapper.
     var saved = userRepository.save(entity);
 
     log.info("Provisioned user: {} ({})", firstName, request.email());
-
-    addMedicineToUser(saved);
-    generateTestHealthMetrics(saved);
 
     return saved.getId().toString();
   }

@@ -94,7 +94,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     UserEntity user =
         userRepository
             .findByAuthId(userId)
-            .orElseThrow(() -> new NotFoundException("User", "id", userId));
+            .orElseThrow(() -> new NotFoundException("User", "authId", userId));
 
     SpecialistEntity specialist =
         specialistRepository
