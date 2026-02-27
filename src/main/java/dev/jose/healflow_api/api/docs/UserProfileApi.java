@@ -1,5 +1,6 @@
 package dev.jose.healflow_api.api.docs;
 
+import dev.jose.healflow_api.api.models.AdminCreateUserRequestDTO;
 import dev.jose.healflow_api.api.models.UpdateUserProfileRequestDTO;
 import dev.jose.healflow_api.api.models.UserProfileResponseDTO;
 import dev.jose.healflow_api.api.models.errors.ApiProblemDetail;
@@ -11,11 +12,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Tag(name = "User Profile", description = "User profile management API")
 @RequestMapping("/user-profile")
@@ -77,4 +83,46 @@ public interface UserProfileApi {
   @PutMapping
   ResponseEntity<UserProfileResponseDTO> updateUserProfile(
       @RequestBody UpdateUserProfileRequestDTO body);
+
+  @Operation(
+      operationId = "adminCreateOrUpdateUser",
+      summary = "Admin: Create or update user",
+      description =
+          "Admin endpoint to create a new user or update an existing user with provided auth ID",
+      security = {@SecurityRequirement(name = "Bearer Auth")})
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "201",
+        description = "User created or updated successfully",
+        content = @Content(schema = @Schema(implementation = UserProfileResponseDTO.class))),
+    @ApiResponse(
+        responseCode = "400",
+        description = "Invalid request",
+        content = @Content(schema = @Schema(implementation = ValidationProblemDetail.class))),
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized",
+        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
+    @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden - requires admin role",
+        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
+    @ApiResponse(
+        responseCode = "404",
+        description = "Specialist not found",
+        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
+    @ApiResponse(
+        responseCode = "409",
+        description = "Email or auth ID already exists",
+        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
+    @ApiResponse(
+        responseCode = "500",
+        description = "Internal server error",
+        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  })
+  @PreAuthorize("hasRole('ADMIN')")
+  @PostMapping("/admin/users")
+  @ResponseStatus(HttpStatus.CREATED)
+  ResponseEntity<UserProfileResponseDTO> adminCreateOrUpdateUser(
+      @Valid @RequestBody AdminCreateUserRequestDTO request);
 }

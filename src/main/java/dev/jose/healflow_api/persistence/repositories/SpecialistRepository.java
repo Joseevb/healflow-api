@@ -19,4 +19,10 @@ public interface SpecialistRepository extends JpaRepository<SpecialistEntity, UU
 
   @Query("SELECT s FROM SpecialistEntity s WHERE s.specialty = :type AND s.isActive = true")
   List<SpecialistEntity> findActiveBySpecialistType(@Param("type") SpecialistTypeEnum type);
+
+  Boolean existsByEmail(String email);
+
+  Boolean existsByFirstNameAndLastName(String firstName, String lastName);
+
+  Boolean existsByLicenseNumber(String licenseNumber);
 }

@@ -1,6 +1,7 @@
 package dev.jose.healflow_api.api.controllers;
 
 import dev.jose.healflow_api.api.docs.UserProfileApi;
+import dev.jose.healflow_api.api.models.AdminCreateUserRequestDTO;
 import dev.jose.healflow_api.api.models.UpdateUserProfileRequestDTO;
 import dev.jose.healflow_api.api.models.UserProfileResponseDTO;
 import dev.jose.healflow_api.services.UserProfileService;
@@ -31,6 +32,13 @@ public class UserProfileController implements UserProfileApi {
     UUID authId = getUserIdFromAuth();
     log.info("Updating profile for user: {}", authId);
     return ResponseEntity.ok(userProfileService.updateUserProfile(authId, body));
+  }
+
+  @Override
+  public ResponseEntity<UserProfileResponseDTO> adminCreateOrUpdateUser(
+      AdminCreateUserRequestDTO request) {
+    log.info("Admin creating/updating user with auth ID: {}", request.authId());
+    return ResponseEntity.status(201).body(userProfileService.adminCreateOrUpdateUser(request));
   }
 
   private UUID getUserIdFromAuth() {

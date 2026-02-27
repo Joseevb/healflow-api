@@ -2,11 +2,14 @@ package dev.jose.healflow_api.services;
 
 import static java.util.function.Predicate.not;
 
+import dev.jose.healflow_api.api.models.AdminCreateUserRequestDTO;
 import dev.jose.healflow_api.api.models.SpecialistSummaryDTO;
 import dev.jose.healflow_api.api.models.UpdateUserProfileRequestDTO;
 import dev.jose.healflow_api.api.models.UserProfileResponseDTO;
+import dev.jose.healflow_api.exceptions.ConflictException;
 import dev.jose.healflow_api.exceptions.NotFoundException;
 import dev.jose.healflow_api.persistence.entities.UserEntity;
+import dev.jose.healflow_api.persistence.repositories.SpecialistRepository;
 import dev.jose.healflow_api.persistence.repositories.UserRepository;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserProfileServiceImpl implements UserProfileService {
 
   private final UserRepository userRepository;
+  private final SpecialistRepository specialistRepository;
 
   @Override
   @Transactional(readOnly = true)
@@ -83,6 +87,81 @@ public class UserProfileServiceImpl implements UserProfileService {
     boolean hasDateOfBirth = user.getDateOfBirth() != null;
 
     return hasRealName && hasPhone && hasDateOfBirth;
+  }
+
+  @Override
+  @Transactional
+  public UserProfileResponseDTO adminCreateOrUpdateUser(AdminCreateUserRequestDTO request) {
+    log.info("Admin creating/updating user with auth ID: {}", request.authId());
+
+    // Check if specialist exists
+    var specialist =
+        specialistRepository
+            .findById(request.primarySpecialistId())
+            .orElseThrow(
+                () -> new NotFoundException("Specialist", "id", request.primarySpecialistId()));
+
+    UserEntity user;
+
+    // Check if user already exists by authId
+    var existingUser = userRepository.findByAuthId(request.authId());
+
+    if (existingUser.isPresent()) {
+      user = existingUser.get();
+      log.info("Updating existing user with auth ID: {}", request.authId());
+
+      // Check if email is being changed and if new email already exists
+      if (!user.getEmail().equals(request.email())
+          && userRepository.existsByEmail(request.email())) {
+        throw new ConflictException("Email already exists");
+      }
+
+      user.setEmail(request.email());
+      user.setFirstName(request.firstName());
+      user.setLastName(request.lastName());
+      user.setPrimarySpecialist(specialist);
+
+      Optional.ofNullable(request.phone()).filter(not(String::isBlank)).ifPresent(user::setPhone);
+      Optional.ofNullable(request.dateOfBirth()).ifPresent(user::setDateOfBirth);
+
+      if (request.isSubscribed() != null) {
+        user.setIsSubscribed(request.isSubscribed());
+      }
+      if (request.isActive() != null) {
+        user.setIsActive(request.isActive());
+      }
+    } else {
+      // Create new user
+      log.info("Creating new user with auth ID: {}", request.authId());
+
+      // Check if email already exists
+      if (userRepository.existsByEmail(request.email())) {
+        throw new ConflictException("Email already exists");
+      }
+
+      // Check if authId already exists
+      if (userRepository.existsByAuthId(request.authId())) {
+        throw new ConflictException("Auth ID already exists");
+      }
+
+      user =
+          UserEntity.builder()
+              .authId(request.authId())
+              .email(request.email())
+              .firstName(request.firstName())
+              .lastName(request.lastName())
+              .phone(request.phone())
+              .dateOfBirth(request.dateOfBirth())
+              .primarySpecialist(specialist)
+              .isSubscribed(request.isSubscribed() != null ? request.isSubscribed() : false)
+              .isActive(request.isActive() != null ? request.isActive() : true)
+              .build();
+    }
+
+    UserEntity savedUser = userRepository.save(user);
+    log.info("Successfully created/updated user with auth ID: {}", request.authId());
+
+    return toProfileResponse(savedUser);
   }
 
   private UserProfileResponseDTO toProfileResponse(UserEntity user) {
