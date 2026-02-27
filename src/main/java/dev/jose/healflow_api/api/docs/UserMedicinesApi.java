@@ -18,6 +18,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -203,6 +204,7 @@ public interface UserMedicinesApi {
         content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   })
   @PutMapping("/{userId}/{medicineId}")
+  @PreAuthorize("hasRole('SPECIALIST')")
   ResponseEntity<UserMedicinesResponseDTO> updateUserMedicine(
       @Parameter(description = "User ID", required = true) @PathVariable UUID userId,
       @Parameter(description = "Medicine ID", required = true) @PathVariable Integer medicineId,
@@ -234,6 +236,7 @@ public interface UserMedicinesApi {
         description = "Internal server error",
         content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   })
+  @PreAuthorize("hasRole('SPECIALIST')")
   @DeleteMapping("/{userId}/{medicineId}")
   ResponseEntity<Void> deleteUserMedicine(
       @Parameter(description = "User ID", required = true) @PathVariable UUID userId,
