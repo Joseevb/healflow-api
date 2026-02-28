@@ -56,7 +56,8 @@ public class SecurityConfig {
                     .authenticated())
         .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()))
         .addFilterBefore(apiKeyFilter, BearerTokenAuthenticationFilter.class)
-        .addFilterAfter(new JwtAuthenticationFilter(), BearerTokenAuthenticationFilter.class)
+        // .addFilterAfter(new JwtAuthenticationFilter(), BearerTokenAuthenticationFilter.class)
+        .addFilterAfter(new JwtAttributeFilter(), BearerTokenAuthenticationFilter.class)
         .build();
   }
 
