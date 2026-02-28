@@ -1,26 +1,29 @@
 package dev.jose.healflow_api.api.docs;
 
 import dev.jose.healflow_api.api.models.AdminCreateUserRequestDTO;
+import dev.jose.healflow_api.api.models.AdminUserProfileResponseDTO;
 import dev.jose.healflow_api.api.models.UpdateUserProfileRequestDTO;
 import dev.jose.healflow_api.api.models.UserProfileResponseDTO;
 import dev.jose.healflow_api.api.models.errors.ApiProblemDetail;
 import dev.jose.healflow_api.api.models.errors.ValidationProblemDetail;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Tag(name = "User Profile", description = "User profile management API")
@@ -125,4 +128,42 @@ public interface UserProfileApi {
   @ResponseStatus(HttpStatus.CREATED)
   ResponseEntity<UserProfileResponseDTO> adminCreateOrUpdateUser(
       @Valid @RequestBody AdminCreateUserRequestDTO request);
+
+
+  @Operation(
+      operationId = "getAllUsers",
+      summary = "Admin: Get all users",
+      description = "Returns a paginated list of all users in the system. Admin access required.",
+      security = {@SecurityRequirement(name = "Bearer Auth")})
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Paginated list of users",
+        content = @Content(schema = @Schema(implementation = AdminUserProfileResponseDTO.class))),
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized",
+        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
+    @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden - requires admin role",
+        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
+    @ApiResponse(
+        responseCode = "500",
+        description = "Internal server error",
+        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  })
+  @PreAuthorize("hasRole('ADMIN')")
+  @GetMapping("/admin/users")
+  ResponseEntity<AdminUserProfileResponseDTO> getAllUsers(
+      @Parameter(
+          description = "Zero-indexed page number",
+          example = "0",
+          required = false)
+          @RequestParam(defaultValue = "0") Integer page,
+      @Parameter(
+          description = "Page size (number of users per page)",
+          example = "20",
+          required = false)
+          @RequestParam(required = false) Integer pageSize);
 }

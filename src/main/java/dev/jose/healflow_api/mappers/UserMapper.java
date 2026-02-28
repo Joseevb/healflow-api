@@ -1,6 +1,7 @@
 package dev.jose.healflow_api.mappers;
 
 import dev.jose.healflow_api.api.models.AddMedicineToUserRequestDTO;
+import dev.jose.healflow_api.api.models.AdminUserProfileDTO;
 import dev.jose.healflow_api.api.models.UserMedicinesResponseDTO;
 import dev.jose.healflow_api.persistence.entities.UserEntity;
 import dev.jose.healflow_api.persistence.entities.UserMedicinesEntity;
@@ -27,4 +28,6 @@ public interface UserMapper extends BaseMapper {
   @Mapping(target = "medicineName", source = "medicine.nameOfMedicine")
   UserMedicinesResponseDTO toUserMedicinesResponseDTO(
       UserMedicinesEntity entity, MedicineDTO medicine);
+
+  AdminUserProfileDTO toAdminUserProfileDTO(UserEntity entity);
 }

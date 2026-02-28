@@ -1,6 +1,7 @@
 package dev.jose.healflow_api.services;
 
 import dev.jose.healflow_api.api.models.AdminCreateUserRequestDTO;
+import dev.jose.healflow_api.api.models.AdminUserProfileResponseDTO;
 import dev.jose.healflow_api.api.models.UpdateUserProfileRequestDTO;
 import dev.jose.healflow_api.api.models.UserProfileResponseDTO;
 import java.util.UUID;
@@ -39,4 +40,13 @@ public interface UserProfileService {
    * @return the created or updated user profile
    */
   UserProfileResponseDTO adminCreateOrUpdateUser(AdminCreateUserRequestDTO request);
+
+  /**
+   * Admin endpoint to get all users
+   *
+   * @param page the page number
+   * @param pageSize the page size
+   * @return list of user profiles
+   */
+  AdminUserProfileResponseDTO getAllUsers(Integer page, Integer pageSize);
 }

@@ -3,18 +3,22 @@ package dev.jose.healflow_api.services;
 import static java.util.function.Predicate.not;
 
 import dev.jose.healflow_api.api.models.AdminCreateUserRequestDTO;
+import dev.jose.healflow_api.api.models.AdminUserProfileResponseDTO;
 import dev.jose.healflow_api.api.models.SpecialistSummaryDTO;
 import dev.jose.healflow_api.api.models.UpdateUserProfileRequestDTO;
 import dev.jose.healflow_api.api.models.UserProfileResponseDTO;
 import dev.jose.healflow_api.exceptions.ConflictException;
 import dev.jose.healflow_api.exceptions.NotFoundException;
+import dev.jose.healflow_api.mappers.UserMapper;
 import dev.jose.healflow_api.persistence.entities.UserEntity;
 import dev.jose.healflow_api.persistence.repositories.SpecialistRepository;
 import dev.jose.healflow_api.persistence.repositories.UserRepository;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,8 +27,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class UserProfileServiceImpl implements UserProfileService {
 
+  private final UserMapper userMapper;
   private final UserRepository userRepository;
   private final SpecialistRepository specialistRepository;
+
+  private static final int DEFAULT_PAGE = 0;
+  private static final int DEFAULT_SIZE = 20;
 
   @Override
   @Transactional(readOnly = true)
@@ -162,6 +170,21 @@ public class UserProfileServiceImpl implements UserProfileService {
     log.info("Successfully created/updated user with auth ID: {}", request.authId());
 
     return toProfileResponse(savedUser);
+  }
+
+  @Override
+  public AdminUserProfileResponseDTO getAllUsers(Integer page, Integer pageSize) {
+    return Optional.of(
+            PageRequest.of(
+                Objects.requireNonNullElse(page, DEFAULT_PAGE),
+                Objects.requireNonNullElse(pageSize, DEFAULT_SIZE)))
+        .map(userRepository::findAll)
+        .map(
+            p ->
+                new AdminUserProfileResponseDTO(
+                    p.getContent().stream().map(userMapper::toAdminUserProfileDTO).toList(),
+                    p.getTotalPages()))
+        .get();
   }
 
   private UserProfileResponseDTO toProfileResponse(UserEntity user) {
