@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,11 +20,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * Filter to extract user ID and role from JWT token and add them to the request context and
  * security context.
  *
- * <p>Extracts:
- * - User ID from 'sub' claim
- * - Specialist ID from 'specialist_id' claim (if present)
- * - Role from 'role' claim (converted to Spring ROLE_ format)
+ * <p>Extracts: - User ID from 'sub' claim - Specialist ID from 'specialist_id' claim (if present) -
+ * Role from 'role' claim (converted to Spring ROLE_ format)
  */
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   @Override
@@ -58,6 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Create new JwtAuthenticationToken with authorities
         JwtAuthenticationToken newAuth =
             new JwtAuthenticationToken(jwt, authorities, jwtAuth.getName());
+        log.warn("\n\nnewAuth {}\n\n", newAuth);
         SecurityContextHolder.getContext().setAuthentication(newAuth);
       }
     }

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,10 +20,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 record JwtContext(UUID userId, UUID specialistId, List<SimpleGrantedAuthority> authorities) {}
 
+@Slf4j
 @Component
 public class JwtAttributeFilter extends OncePerRequestFilter {
-
-  private final Function<String, Integer> toInteger = str -> Integer.valueOf(str);
 
   private final Function<Jwt, JwtContext> extractContext =
       jwt ->
@@ -44,6 +44,7 @@ public class JwtAttributeFilter extends OncePerRequestFilter {
         .ifPresent(
             ctx -> {
               req.setAttribute("userId", ctx.userId());
+              log.warn("\n\nJWT ctx {}\n\n", ctx);
               Optional.ofNullable(ctx.specialistId())
                   .ifPresent(id -> req.setAttribute("specialistId", id));
               rebuildAuthentication(ctx);

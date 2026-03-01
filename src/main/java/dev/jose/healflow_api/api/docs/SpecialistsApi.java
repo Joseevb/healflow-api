@@ -172,7 +172,7 @@ public interface SpecialistsApi {
   })
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   ResponseEntity<SpecialistResponseDTO> createSpecialist(
       @Valid @RequestBody CreateSpecialistRequestDTO request);
 
@@ -243,7 +243,7 @@ public interface SpecialistsApi {
         content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   })
   @PutMapping("/{specialistId}/availabilities/{dayOfWeek}")
-  @PreAuthorize("hasRole('SPECIALIST')")
+  @PreAuthorize("hasAuthority('ROLE_SPECIALIST')")
   ResponseEntity<SpecialistAvailabilityResponseDTO> updateSpecialistAvailability(
       @Parameter(description = "Specialist unique identifier") @PathVariable UUID specialistId,
       @Parameter(description = "Day of the week") @PathVariable DayOfWeek dayOfWeek,
@@ -276,7 +276,7 @@ public interface SpecialistsApi {
         content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   })
   @DeleteMapping("/{specialistId}/availabilities/{availabilityId}")
-  @PreAuthorize("hasRole('SPECIALIST')")
+  @PreAuthorize("hasAuthority('ROLE_SPECIALIST')")
   ResponseEntity<Void> deleteSpecialistAvailability(
       @Parameter(description = "Specialist unique identifier") @PathVariable UUID specialistId,
       @Parameter(description = "Availability record unique identifier") @PathVariable

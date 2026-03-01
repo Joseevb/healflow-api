@@ -204,7 +204,7 @@ public interface UserMedicinesApi {
         content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   })
   @PutMapping("/{userId}/{medicineId}")
-  @PreAuthorize("hasRole('SPECIALIST')")
+  @PreAuthorize("hasAuthority('ROLE_SPECIALIST')")
   ResponseEntity<UserMedicinesResponseDTO> updateUserMedicine(
       @Parameter(description = "User ID", required = true) @PathVariable UUID userId,
       @Parameter(description = "Medicine ID", required = true) @PathVariable Integer medicineId,
@@ -236,7 +236,7 @@ public interface UserMedicinesApi {
         description = "Internal server error",
         content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   })
-  @PreAuthorize("hasRole('SPECIALIST')")
+  @PreAuthorize("hasAuthority('ROLE_SPECIALIST')")
   @DeleteMapping("/{userId}/{medicineId}")
   ResponseEntity<Void> deleteUserMedicine(
       @Parameter(description = "User ID", required = true) @PathVariable UUID userId,

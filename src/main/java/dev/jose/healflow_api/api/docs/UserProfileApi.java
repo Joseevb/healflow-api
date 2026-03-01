@@ -123,12 +123,11 @@ public interface UserProfileApi {
         description = "Internal server error",
         content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   })
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   @PostMapping("/admin/users")
   @ResponseStatus(HttpStatus.CREATED)
   ResponseEntity<UserProfileResponseDTO> adminCreateOrUpdateUser(
       @Valid @RequestBody AdminCreateUserRequestDTO request);
-
 
   @Operation(
       operationId = "getAllUsers",
@@ -153,17 +152,16 @@ public interface UserProfileApi {
         description = "Internal server error",
         content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   })
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   @GetMapping("/admin/users")
   ResponseEntity<AdminUserProfileResponseDTO> getAllUsers(
+      @Parameter(description = "Zero-indexed page number", example = "0", required = false)
+          @RequestParam(defaultValue = "0")
+          Integer page,
       @Parameter(
-          description = "Zero-indexed page number",
-          example = "0",
-          required = false)
-          @RequestParam(defaultValue = "0") Integer page,
-      @Parameter(
-          description = "Page size (number of users per page)",
-          example = "20",
-          required = false)
-          @RequestParam(required = false) Integer pageSize);
+              description = "Page size (number of users per page)",
+              example = "20",
+              required = false)
+          @RequestParam(required = false)
+          Integer pageSize);
 }
