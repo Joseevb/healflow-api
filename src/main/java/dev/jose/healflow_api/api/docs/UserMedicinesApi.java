@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -39,42 +38,40 @@ public interface UserMedicinesApi {
       description = "Returns list of medicines for a user",
       security = {@SecurityRequirement(name = "Bearer Auth")},
       tags = {"User Medicines"})
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "List of medicines",
-        content =
-            @io.swagger.v3.oas.annotations.media.Content(
-                array =
-                    @io.swagger.v3.oas.annotations.media.ArraySchema(
-                        schema =
-                            @io.swagger.v3.oas.annotations.media.Schema(
-                                implementation = UserMedicinesResponseDTO.class)))),
-    @ApiResponse(
-        responseCode = "401",
-        description = "Unauthorized",
-        content =
-            @io.swagger.v3.oas.annotations.media.Content(
-                schema =
-                    @io.swagger.v3.oas.annotations.media.Schema(
-                        implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "404",
-        description = "User not found",
-        content =
-            @io.swagger.v3.oas.annotations.media.Content(
-                schema =
-                    @io.swagger.v3.oas.annotations.media.Schema(
-                        implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "500",
-        description = "Internal server error",
-        content =
-            @io.swagger.v3.oas.annotations.media.Content(
-                schema =
-                    @io.swagger.v3.oas.annotations.media.Schema(
-                        implementation = ApiProblemDetail.class)))
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "List of medicines",
+      content =
+          @io.swagger.v3.oas.annotations.media.Content(
+              array =
+                  @io.swagger.v3.oas.annotations.media.ArraySchema(
+                      schema =
+                          @io.swagger.v3.oas.annotations.media.Schema(
+                              implementation = UserMedicinesResponseDTO.class))))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content =
+          @io.swagger.v3.oas.annotations.media.Content(
+              schema =
+                  @io.swagger.v3.oas.annotations.media.Schema(
+                      implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "404",
+      description = "User not found",
+      content =
+          @io.swagger.v3.oas.annotations.media.Content(
+              schema =
+                  @io.swagger.v3.oas.annotations.media.Schema(
+                      implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content =
+          @io.swagger.v3.oas.annotations.media.Content(
+              schema =
+                  @io.swagger.v3.oas.annotations.media.Schema(
+                      implementation = ApiProblemDetail.class)))
   @GetMapping
   ResponseEntity<List<UserMedicinesResponseDTO>> getUserMedicines(
       @Parameter(hidden = true) @RequestAttribute UUID userId);
@@ -85,28 +82,26 @@ public interface UserMedicinesApi {
       description = "Returns a specific medicine for the authenticated user",
       security = {@SecurityRequirement(name = "Bearer Auth")},
       tags = {"User Medicines"})
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Medicine details",
-        content = @Content(schema = @Schema(implementation = UserMedicinesResponseDTO.class))),
-    @ApiResponse(
-        responseCode = "401",
-        description = "Unauthorized",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "403",
-        description = "Forbidden - User doesn't own this medicine",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "404",
-        description = "Medicine not found",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "500",
-        description = "Internal server error",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Medicine details",
+      content = @Content(schema = @Schema(implementation = UserMedicinesResponseDTO.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden - User doesn't own this medicine",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "404",
+      description = "Medicine not found",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   @GetMapping("/{userId}/{medicineId}")
   ResponseEntity<UserMedicinesResponseDTO> getUserMedicineById(
       @Parameter(description = "User ID", required = true) @PathVariable UUID userId,
@@ -119,20 +114,18 @@ public interface UserMedicinesApi {
       description = "Returns the count of medicines for the authenticated user",
       security = {@SecurityRequirement(name = "Bearer Auth")},
       tags = {"User Medicines"})
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Medicine count",
-        content = @Content(schema = @Schema(implementation = UserMedicineCountResponseDTO.class))),
-    @ApiResponse(
-        responseCode = "401",
-        description = "Unauthorized",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "500",
-        description = "Internal server error",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Medicine count",
+      content = @Content(schema = @Schema(implementation = UserMedicineCountResponseDTO.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   @GetMapping("/count")
   ResponseEntity<UserMedicineCountResponseDTO> getUserMedicineCount(
       @Parameter(hidden = true) @RequestAttribute UUID userId);
@@ -143,28 +136,26 @@ public interface UserMedicinesApi {
       description = "Adds a new medicine to the authenticated user's prescription",
       security = {@SecurityRequirement(name = "Bearer Auth")},
       tags = {"User Medicines"})
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "201",
-        description = "Medicine added successfully",
-        content = @Content(schema = @Schema(implementation = UserMedicinesResponseDTO.class))),
-    @ApiResponse(
-        responseCode = "400",
-        description = "Invalid input",
-        content = @Content(schema = @Schema(implementation = ValidationProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "401",
-        description = "Unauthorized",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "404",
-        description = "User or medicine not found",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "500",
-        description = "Internal server error",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
-  })
+  @ApiResponse(
+      responseCode = "201",
+      description = "Medicine added successfully",
+      content = @Content(schema = @Schema(implementation = UserMedicinesResponseDTO.class)))
+  @ApiResponse(
+      responseCode = "400",
+      description = "Invalid input",
+      content = @Content(schema = @Schema(implementation = ValidationProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "404",
+      description = "User or medicine not found",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   @PostMapping
   ResponseEntity<UserMedicinesResponseDTO> addMedicineToUser(
       @Parameter(hidden = true) @RequestAttribute UUID userId,
@@ -177,32 +168,30 @@ public interface UserMedicinesApi {
       description = "Updates an existing medicine prescription for the authenticated user",
       security = {@SecurityRequirement(name = "Bearer Auth")},
       tags = {"User Medicines"})
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Medicine updated successfully",
-        content = @Content(schema = @Schema(implementation = UserMedicinesResponseDTO.class))),
-    @ApiResponse(
-        responseCode = "400",
-        description = "Invalid input",
-        content = @Content(schema = @Schema(implementation = ValidationProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "401",
-        description = "Unauthorized",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "403",
-        description = "Forbidden - User doesn't own this medicine",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "404",
-        description = "Medicine not found",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "500",
-        description = "Internal server error",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Medicine updated successfully",
+      content = @Content(schema = @Schema(implementation = UserMedicinesResponseDTO.class)))
+  @ApiResponse(
+      responseCode = "400",
+      description = "Invalid input",
+      content = @Content(schema = @Schema(implementation = ValidationProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden - User doesn't own this medicine",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "404",
+      description = "Medicine not found",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   @PutMapping("/{userId}/{medicineId}")
   @PreAuthorize("hasAuthority('ROLE_SPECIALIST')")
   ResponseEntity<UserMedicinesResponseDTO> updateUserMedicine(
@@ -217,25 +206,20 @@ public interface UserMedicinesApi {
       description = "Removes a medicine from the authenticated user's prescription",
       security = {@SecurityRequirement(name = "Bearer Auth")},
       tags = {"User Medicines"})
-  @ApiResponses({
-    @ApiResponse(responseCode = "204", description = "Medicine deleted successfully"),
-    @ApiResponse(
-        responseCode = "401",
-        description = "Unauthorized",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "403",
-        description = "Forbidden - User doesn't own this medicine",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "404",
-        description = "Medicine not found",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "500",
-        description = "Internal server error",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
-  })
+  @ApiResponse(responseCode = "204", description = "Medicine deleted successfully")
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden - User doesn't own this medicine",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(responseCode = "404", description = "Medicine not found")
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   @PreAuthorize("hasAuthority('ROLE_SPECIALIST')")
   @DeleteMapping("/{userId}/{medicineId}")
   ResponseEntity<Void> deleteUserMedicine(

@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -59,23 +58,20 @@ public interface SpecialistsApi {
                     enumAsRef = true,
                     implementation = SpecialistTypeEnum.class))
       })
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "List of specialists",
-        content =
-            @Content(
-                array =
-                    @ArraySchema(schema = @Schema(implementation = SpecialistResponseDTO.class)))),
-    @ApiResponse(
-        responseCode = "401",
-        description = "Unauthorized",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "500",
-        description = "Internal server error",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "List of specialists",
+      content =
+          @Content(
+              array = @ArraySchema(schema = @Schema(implementation = SpecialistResponseDTO.class))))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   @GetMapping
   ResponseEntity<List<SpecialistResponseDTO>> getAvailableSpecialists(
       @RequestParam Optional<SpecialistTypeEnum> type);
@@ -84,20 +80,17 @@ public interface SpecialistsApi {
       operationId = "getSpecialistTypes",
       summary = "Get specialist types",
       description = "Returns list of all available specialist types")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "List of specialist types",
-        content =
-            @Content(
-                array =
-                    @ArraySchema(
-                        schema = @Schema(implementation = SpecialistTypeResponseDTO.class)))),
-    @ApiResponse(
-        responseCode = "500",
-        description = "Internal server error",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "List of specialist types",
+      content =
+          @Content(
+              array =
+                  @ArraySchema(schema = @Schema(implementation = SpecialistTypeResponseDTO.class))))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   @GetMapping("/types")
   ResponseEntity<List<SpecialistTypeResponseDTO>> getSpecialistTypes();
 
@@ -106,27 +99,25 @@ public interface SpecialistsApi {
       summary = "Get specialist booking data",
       description = "Returns available time slots for a specialist within a date range",
       security = {@SecurityRequirement(name = "Bearer Auth")})
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Specialist booking schedule",
-        content =
-            @Content(
-                array =
-                    @ArraySchema(schema = @Schema(implementation = DayScheduleResponseDTO.class)))),
-    @ApiResponse(
-        responseCode = "401",
-        description = "Unauthorized",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "404",
-        description = "Specialist not found",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "500",
-        description = "Internal server error",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Specialist booking schedule",
+      content =
+          @Content(
+              array =
+                  @ArraySchema(schema = @Schema(implementation = DayScheduleResponseDTO.class))))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "404",
+      description = "Specialist not found",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   @GetMapping("/specialists/{specialistId}/booking-data")
   ResponseEntity<List<DayScheduleResponseDTO>> getSpecialistBookingData(
       @Parameter(description = "Specialist unique identifier") @PathVariable UUID specialistId,
@@ -144,32 +135,30 @@ public interface SpecialistsApi {
       summary = "Admin: Create a new specialist",
       description = "Creates a new healthcare specialist in the system. Admin access required.",
       security = {@SecurityRequirement(name = "Bearer Auth")})
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "201",
-        description = "Specialist created successfully",
-        content = @Content(schema = @Schema(implementation = SpecialistResponseDTO.class))),
-    @ApiResponse(
-        responseCode = "400",
-        description = "Invalid request body",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "401",
-        description = "Unauthorized",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "403",
-        description = "Forbidden - requires admin role",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "409",
-        description = "Specialist already exists",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "500",
-        description = "Internal server error",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
-  })
+  @ApiResponse(
+      responseCode = "201",
+      description = "Specialist created successfully",
+      content = @Content(schema = @Schema(implementation = SpecialistResponseDTO.class)))
+  @ApiResponse(
+      responseCode = "400",
+      description = "Invalid request body",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden - requires admin role",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "409",
+      description = "Specialist already exists",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -181,29 +170,26 @@ public interface SpecialistsApi {
       summary = "Get specialist availabilities",
       description = "Returns all availability timeslots for a specialist",
       security = {@SecurityRequirement(name = "Bearer Auth")})
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "List of availability timeslots",
-        content =
-            @Content(
-                array =
-                    @ArraySchema(
-                        schema =
-                            @Schema(implementation = SpecialistAvailabilityResponseDTO.class)))),
-    @ApiResponse(
-        responseCode = "401",
-        description = "Unauthorized",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "404",
-        description = "Specialist not found",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "500",
-        description = "Internal server error",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "List of availability timeslots",
+      content =
+          @Content(
+              array =
+                  @ArraySchema(
+                      schema = @Schema(implementation = SpecialistAvailabilityResponseDTO.class))))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "404",
+      description = "Specialist not found",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   @GetMapping("/{specialistId}/availabilities")
   ResponseEntity<List<SpecialistAvailabilityResponseDTO>> getSpecialistAvailabilities(
       @Parameter(description = "Specialist unique identifier") @PathVariable UUID specialistId);
@@ -215,33 +201,31 @@ public interface SpecialistsApi {
           "Updates or creates availability timeslot for a specialist. Only specialists can update"
               + " their own timeslots.",
       security = {@SecurityRequirement(name = "Bearer Auth")})
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Availability updated successfully",
-        content =
-            @Content(schema = @Schema(implementation = SpecialistAvailabilityResponseDTO.class))),
-    @ApiResponse(
-        responseCode = "400",
-        description = "Invalid request body",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "401",
-        description = "Unauthorized",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "403",
-        description = "Forbidden - cannot update another specialist's timeslots",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "404",
-        description = "Specialist not found",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "500",
-        description = "Internal server error",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Availability updated successfully",
+      content =
+          @Content(schema = @Schema(implementation = SpecialistAvailabilityResponseDTO.class)))
+  @ApiResponse(
+      responseCode = "400",
+      description = "Invalid request body",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden - cannot update another specialist's timeslots",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "404",
+      description = "Specialist not found",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   @PutMapping("/{specialistId}/availabilities/{dayOfWeek}")
   @PreAuthorize("hasAuthority('ROLE_SPECIALIST')")
   ResponseEntity<SpecialistAvailabilityResponseDTO> updateSpecialistAvailability(
@@ -256,25 +240,23 @@ public interface SpecialistsApi {
           "Deletes an availability timeslot for a specialist. Only specialists can delete their own"
               + " timeslots.",
       security = {@SecurityRequirement(name = "Bearer Auth")})
-  @ApiResponses({
-    @ApiResponse(responseCode = "204", description = "Availability deleted successfully"),
-    @ApiResponse(
-        responseCode = "401",
-        description = "Unauthorized",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "403",
-        description = "Forbidden - cannot delete another specialist's timeslots",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "404",
-        description = "Specialist or availability not found",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "500",
-        description = "Internal server error",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
-  })
+  @ApiResponse(responseCode = "204", description = "Availability deleted successfully")
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden - cannot delete another specialist's timeslots",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "404",
+      description = "Specialist or availability not found",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   @DeleteMapping("/{specialistId}/availabilities/{availabilityId}")
   @PreAuthorize("hasAuthority('ROLE_SPECIALIST')")
   ResponseEntity<Void> deleteSpecialistAvailability(

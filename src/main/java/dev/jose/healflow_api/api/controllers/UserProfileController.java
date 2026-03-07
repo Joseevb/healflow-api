@@ -47,6 +47,12 @@ public class UserProfileController implements UserProfileApi {
     return ResponseEntity.ok(userProfileService.getAllUsers(page, pageSize));
   }
 
+  @Override
+  public ResponseEntity<Void> deleteUser(UUID id) {
+    userProfileService.deleteUser(id);
+    return ResponseEntity.noContent().build();
+  }
+
   private UUID getUserIdFromAuth() {
     Authentication authentication =
         org.springframework.security.core.context.SecurityContextHolder.getContext()

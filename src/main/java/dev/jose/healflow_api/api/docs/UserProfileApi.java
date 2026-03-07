@@ -11,14 +11,16 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,24 +37,22 @@ public interface UserProfileApi {
       summary = "Get user profile",
       description = "Returns the authenticated user's profile information",
       security = {@SecurityRequirement(name = "Bearer Auth")})
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "User profile",
-        content = @Content(schema = @Schema(implementation = UserProfileResponseDTO.class))),
-    @ApiResponse(
-        responseCode = "401",
-        description = "Unauthorized",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "404",
-        description = "User not found",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "500",
-        description = "Internal server error",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "User profile",
+      content = @Content(schema = @Schema(implementation = UserProfileResponseDTO.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "404",
+      description = "User not found",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   @GetMapping
   ResponseEntity<UserProfileResponseDTO> getUserProfile();
 
@@ -61,28 +61,22 @@ public interface UserProfileApi {
       summary = "Update user profile",
       description = "Updates the authenticated user's profile information",
       security = {@SecurityRequirement(name = "Bearer Auth")})
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Profile updated successfully",
-        content = @Content(schema = @Schema(implementation = UserProfileResponseDTO.class))),
-    @ApiResponse(
-        responseCode = "400",
-        description = "Invalid request",
-        content = @Content(schema = @Schema(implementation = ValidationProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "401",
-        description = "Unauthorized",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "404",
-        description = "User not found",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "500",
-        description = "Internal server error",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Profile updated successfully",
+      content = @Content(schema = @Schema(implementation = UserProfileResponseDTO.class)))
+  @ApiResponse(
+      responseCode = "400",
+      description = "Invalid request",
+      content = @Content(schema = @Schema(implementation = ValidationProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "404",
+      description = "User not found",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   @PutMapping
   ResponseEntity<UserProfileResponseDTO> updateUserProfile(
       @RequestBody UpdateUserProfileRequestDTO body);
@@ -93,36 +87,34 @@ public interface UserProfileApi {
       description =
           "Admin endpoint to create a new user or update an existing user with provided auth ID",
       security = {@SecurityRequirement(name = "Bearer Auth")})
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "201",
-        description = "User created or updated successfully",
-        content = @Content(schema = @Schema(implementation = UserProfileResponseDTO.class))),
-    @ApiResponse(
-        responseCode = "400",
-        description = "Invalid request",
-        content = @Content(schema = @Schema(implementation = ValidationProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "401",
-        description = "Unauthorized",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "403",
-        description = "Forbidden - requires admin role",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "404",
-        description = "Specialist not found",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "409",
-        description = "Email or auth ID already exists",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "500",
-        description = "Internal server error",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
-  })
+  @ApiResponse(
+      responseCode = "201",
+      description = "User created or updated successfully",
+      content = @Content(schema = @Schema(implementation = UserProfileResponseDTO.class)))
+  @ApiResponse(
+      responseCode = "400",
+      description = "Invalid request",
+      content = @Content(schema = @Schema(implementation = ValidationProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden - requires admin role",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "404",
+      description = "Specialist not found",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "409",
+      description = "Email or auth ID already exists",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   @PostMapping("/admin/users")
   @ResponseStatus(HttpStatus.CREATED)
@@ -134,24 +126,22 @@ public interface UserProfileApi {
       summary = "Admin: Get all users",
       description = "Returns a paginated list of all users in the system. Admin access required.",
       security = {@SecurityRequirement(name = "Bearer Auth")})
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Paginated list of users",
-        content = @Content(schema = @Schema(implementation = AdminUserProfileResponseDTO.class))),
-    @ApiResponse(
-        responseCode = "401",
-        description = "Unauthorized",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "403",
-        description = "Forbidden - requires admin role",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class))),
-    @ApiResponse(
-        responseCode = "500",
-        description = "Internal server error",
-        content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Paginated list of users",
+      content = @Content(schema = @Schema(implementation = AdminUserProfileResponseDTO.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden - requires admin role",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
   @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   @GetMapping("/admin/users")
   ResponseEntity<AdminUserProfileResponseDTO> getAllUsers(
@@ -164,4 +154,19 @@ public interface UserProfileApi {
               required = false)
           @RequestParam(required = false)
           Integer pageSize);
+
+  @Operation(
+      summary = "Delete a user by ID",
+      description = "Deletes a user by their auth ID. WARNING this action is irreversible")
+  @ApiResponse(responseCode = "204", description = "User deleted successfully")
+  @ApiResponse(
+      responseCode = "404",
+      description = "User not found",
+      content = @Content(schema = @Schema(implementation = ApiProblemDetail.class)))
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+  @DeleteMapping("/admin/users/{id}")
+  ResponseEntity<Void> deleteUser(
+      @Parameter(description = "User ID", example = "550e8400-e29b-41d4-a716-446655440000")
+          @PathVariable
+          UUID id);
 }

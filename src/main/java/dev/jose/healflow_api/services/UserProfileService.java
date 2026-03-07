@@ -49,4 +49,11 @@ public interface UserProfileService {
    * @return list of user profiles
    */
   AdminUserProfileResponseDTO getAllUsers(Integer page, Integer pageSize);
+
+  /**
+   * Delete a user by ID
+   *
+   * @param id the user ID
+   */
+  void deleteUser(UUID id);
 }

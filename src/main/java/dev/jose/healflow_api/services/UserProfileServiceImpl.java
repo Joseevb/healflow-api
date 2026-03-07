@@ -187,6 +187,11 @@ public class UserProfileServiceImpl implements UserProfileService {
         .get();
   }
 
+  @Override
+  public void deleteUser(UUID id) {
+    userRepository.findByAuthId(id).ifPresent(userRepository::delete);
+  }
+
   private UserProfileResponseDTO toProfileResponse(UserEntity user) {
     var specialist = user.getPrimarySpecialist();
     var specialistSummary =
